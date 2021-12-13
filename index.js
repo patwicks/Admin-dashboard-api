@@ -12,7 +12,6 @@ app.use(express.json());
 app.use(cors());
 
 // routes
-
 app.use("/api/admin", AdminRoutes);
 
 // connect to the database
@@ -20,6 +19,7 @@ mongoose.connect(process.env.DB_CONNECTION_STRING, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function () {

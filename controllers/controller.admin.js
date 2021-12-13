@@ -3,18 +3,15 @@ const {
   loginValidation,
 } = require("../validation/validation.admin");
 
-
 const Admin = require("../models/model.admin");
 const bcrypt = require("bcryptjs");
-
-
-
+const jwt = require("jsonwebtoken");
 
 const REGISTER_NEW_ADMIN = async (req, res) => {
   // Validate Regsitration input
   const { error } = registerValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
-  
+
   const checkEmailExist = await Admin.findOne({ email: req.body.email });
   if (checkEmailExist)
     return res.status(400).json({ error: "Email already in used!" });
@@ -28,25 +25,24 @@ const REGISTER_NEW_ADMIN = async (req, res) => {
     password: hashedPassword,
     gender: req.body.gender,
     profile: req.body.profile,
-  
   });
   try {
     const saveNewAdmin = await admin.save();
     if (saveNewAdmin) {
-      res.status(200).json({data:saveNewAdmin,successMessage:"Successfully Registered!"});
-
+      res.status(200).json({
+        data: saveNewAdmin,
+        successMessage: "Successfully Registered!",
+      });
     }
   } catch (error) {
     console.log(error);
     res.status(400).json({ errorMessage: "Failed to register!" });
   }
-
 };
-
 
 // Login the admin
 const LOGIN_ADMIN = async (req, res) => {
-  const { error } =  loginValidation(req.body);
+  const { error } = loginValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
   try {
     // Check email if already existing to the database
@@ -57,11 +53,12 @@ const LOGIN_ADMIN = async (req, res) => {
     );
     if (!admin || !validPassword) {
       return res.status(400).json({ error: "Invalid email or password!" });
-    } 
-    // Password is Correct
-    // create and assigned token
-   
-    res.status(200).json({data:admin,successMessage:"Successfully Login!"});
+    } else {
+      const token = jwt.sign({ _id: admin._id }, process.env.TOKEN_SECRET);
+      res.header("token", token).json({
+        token: token,
+      });
+    }
   } catch (err) {
     return res.status(400).json({ error: "Invalid Account!" });
   }
@@ -69,5 +66,5 @@ const LOGIN_ADMIN = async (req, res) => {
 
 module.exports = {
   REGISTER_NEW_ADMIN,
-  LOGIN_ADMIN
+  LOGIN_ADMIN,
 };
