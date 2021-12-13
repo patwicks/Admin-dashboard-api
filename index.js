@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 // router
-const RegisterRoutes = require("./routes/router.register");
+const AdminRoutes = require("./routes/router.admin");
 
 dotenv.config();
 app.use(express.json());
@@ -13,7 +13,7 @@ app.use(cors());
 
 // routes
 
-app.use("/api/admin", RegisterRoutes);
+app.use("/api/admin", AdminRoutes);
 
 // connect to the database
 mongoose.connect(process.env.DB_CONNECTION_STRING, {

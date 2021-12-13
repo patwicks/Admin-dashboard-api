@@ -14,6 +14,10 @@ const AdminSchema = new mongoose.Schema(
     gender: {
       type: String,
     },
+    profile: {
+      type: String,
+    },
+ 
   },
   { timestamps: true }
 );
