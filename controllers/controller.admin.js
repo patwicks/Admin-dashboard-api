@@ -53,12 +53,12 @@ const LOGIN_ADMIN = async (req, res) => {
     );
     if (!admin || !validPassword) {
       return res.status(400).json({ error: "Invalid email or password!" });
-    } else {
-      const token = jwt.sign({ _id: admin._id }, process.env.TOKEN_SECRET);
-      res.header("token", token).json({
-        token: token,
-      });
     }
+
+    const token = jwt.sign({ _id: admin._id }, process.env.TOKEN_SECRET);
+    res.header("token", token).json({
+      token: token,
+    });
   } catch (err) {
     return res.status(400).json({ error: "Invalid Account!" });
   }
